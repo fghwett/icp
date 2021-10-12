@@ -17,9 +17,11 @@ var IcpNotForRecord = errors.New("域名未备案")
 
 type Icp struct {
 	token string
+	ip    string
 }
 
 func (i *Icp) Query(domain string) (*model.DomainInfo, error) {
+	i.getIp()
 	if err := i.auth(); err != nil {
 		return nil, err
 	}
@@ -83,11 +85,16 @@ func (i *Icp) post(url string, data io.Reader, contentType string, token string,
 	queryReq.Header.Set("Referer", "https://beian.miit.gov.cn/")
 	queryReq.Header.Set("token", token)
 	queryReq.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36")
-
-	ip := util.RandIp()
-	queryReq.Header.Set("CLIENT_IP", ip)
-	queryReq.Header.Set("X-FORWARDED-FOR", ip)
+	queryReq.Header.Set("CLIENT_IP", i.ip)
+	queryReq.Header.Set("X-FORWARDED-FOR", i.ip)
 
 	resp, err := http.DefaultClient.Do(queryReq)
 	return util.GetHTTPResponse(resp, postUrl, err, result)
+}
+
+func (i *Icp) getIp() {
+	if i.ip != "" {
+		return
+	}
+	i.ip = util.RandIp()
 }

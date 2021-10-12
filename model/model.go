@@ -26,7 +26,7 @@ type QueryParams struct {
 	HasPreviousPage  bool          `json:"hasPreviousPage"`
 	IsFirstPage      bool          `json:"isFirstPage"`
 	IsLastPage       bool          `json:"isLastPage"`
-	LastPage         bool          `json:"lastPage"`
+	LastPage         int           `json:"lastPage"`
 	List             []*DomainInfo `json:"list"`
 	NavigatePages    int           `json:"navigatePages"`
 	NavigatepageNums []int         `json:"navigatepageNums"`
