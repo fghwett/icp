@@ -8,8 +8,69 @@
 - [x] 通过主域名查询
 - [ ] 通过子域查询
 - [ ] 通过链接🔗 查询
-- [ ] 通过备案号反差域名
-- [ ] 通过注册人（注册单位）反差域名
+- [ ] 通过备案号反查域名
+- [ ] 通过注册人（注册单位）反查域名
+
+## 独立部署使用
+
+### 启动
+```shell
+# 下载源码
+git clone https://github.com/fghwett/icp.git
+
+# 编译程序
+cd icp && go build && chmod 777 ./icp
+
+# 运行 
+./icp -port 2080
+```
+
+### 使用
+GET http://127.0.0.1:2080/query?domain=mi.cn
+
+**有备案信息：**
+```json
+{
+    "code": 0,
+    "msg": "Success",
+    "data": {
+        "isRecorded": true,
+        "contentTypeName": "",
+        "domain": "mi.cn",
+        "domainId": 10004219290,
+        "homeUrl": "www.mi.cn",
+        "leaderName": "",
+        "limitAccess": "否",
+        "mainId": 6504864,
+        "mainLicence": "京ICP备10046444号",
+        "natureName": "企业",
+        "serviceId": 10001392064,
+        "serviceLicence": "京ICP备10046444号-9",
+        "serviceName": "小米科技",
+        "unitName": "小米科技有限责任公司",
+        "updateRecordTime": "2021-08-16 13:55:56"
+    }
+}
+```
+
+**没有备案信息**
+```json
+{
+    "code": 0,
+    "msg": "Success",
+    "data": {
+        "isRecorded": false
+    }
+}
+```
+
+### 帮助
+```shell
+icp git:(main) x go run main.go -h                                                                                          
+Usage of /var/folders/wy/g_2j2y253zgcckblv6zl8tc00000gn/T/go-build310657506/b001/exe/main:
+  -port int
+        api端口 (default 2080)
+```
 
 ## 开发流程
 查询备案信息主要流程如下：
