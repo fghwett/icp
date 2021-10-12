@@ -72,6 +72,65 @@ Usage of /var/folders/wy/g_2j2y253zgcckblv6zl8tc00000gn/T/go-build310657506/b001
         api端口 (default 2080)
 ```
 
+## 作为sdk引入使用
+**导入依赖：**
+`go get github.com/fghwett/icp`
+
+**编写逻辑：**
+```go
+// icp.go
+package icp
+
+import (
+   "fmt"
+   
+   "github.com/fghwett/icp/abbreviateinfo"
+)
+
+func Do() {
+   domain := "126.com"
+   
+   icp := &abbreviateinfo.Icp{}
+   
+   domainInfo, err := icp.Query(domain)
+   if err == abbreviateinfo.IcpNotForRecord {
+       fmt.Printf("%s尚未备案\n", domain)
+   } else if err != nil {
+       fmt.Printf("%s查询备案信息出错：%v\n", domain, err)
+   } else {
+       fmt.Printf("域名：%s\n备案号：%s\n备案名称：%s\n备案类型：%s备案\n备案人/单位：%s\n是否被限制访问：%s\n", domain, domainInfo.ServiceLicence, domainInfo.ServiceName, domainInfo.NatureName, domainInfo.UnitName, domainInfo.LimitAccess)
+   }
+}
+```
+
+**编写测试函数：**
+```go
+// icp_test.go
+
+package icp
+
+import "testing"
+
+func TestDo(t *testing.T) {
+   Do()
+}
+```
+
+**运行测试：**
+```log
+=== RUN   TestDo
+域名：126.com
+备案号：粤B2-20090191-13
+备案名称：网易126免费邮
+备案类型：企业备案
+备案人/单位：广州网易计算机系统有限公司
+是否被限制访问：否
+--- PASS: TestDo (1.06s)
+PASS
+
+Debugger finished with the exit code 0
+```
+
 ## 开发流程
 查询备案信息主要流程如下：
 调用 `auth` 接口获取token，利用token调用 `icpAbbreviateInfo/queryByCondition`接口查询相关信息
