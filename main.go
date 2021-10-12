@@ -1,7 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"flag"
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/fghwett/icp/api"
+)
+
+var port = flag.Int("port", 2080, "api端口")
 
 func main() {
-	fmt.Println("项目开发中")
+	flag.Parse()
+
+	http.HandleFunc("/query", api.Query)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
+
 }
